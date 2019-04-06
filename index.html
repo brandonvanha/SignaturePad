@@ -1,0 +1,87 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign pad</title>
+
+    <style>
+        .wrapper {
+            position: relative;
+            width: 400px;
+            height: 200px;
+            border: 1px solid #eee;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        img {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .signature-pad {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 400px;
+            height: 200px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1>
+        Sign Here:
+    </h1>
+    <div class="wrapper">
+        <canvas id="signature-pad" class="signature-pad" width=400 height=200></canvas>
+    </div>
+    <div>
+        <button id="save">Save</button>
+        <button id="clear">Clear</button>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+    <script>
+        var signaturePad = new SignaturePad(document.getElementById('signature-pad'), {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+        var saveButton = document.getElementById('save');
+        var cancelButton = document.getElementById('clear');
+
+        saveButton.addEventListener('click', function (event) {
+            if (signaturePad.isEmpty()) {
+                alert("Please insert signature.");
+            } else {
+                var dataUrl = signaturePad.toDataURL();
+                var imageSignature = dataUrl.replace(/^data:image\/(png|jpg);base64,/, "");
+
+                $.ajax({
+                    url: 'index.php',
+                    type: 'POST',
+                    data: {
+                        imageData: imageSignature
+                    },
+                }).done(function (msg) {
+                    alert("Image saved successfully. " + msg);
+                }).fail(function (msg) {
+                    alert("Error saving image. " + msg);
+                });
+            }
+        });
+
+        cancelButton.addEventListener('click', function (event) {
+            signaturePad.clear();
+        });
+    </script>
+</body>
+
+</html>
