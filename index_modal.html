@@ -11,6 +11,7 @@
         #myBtn {
             width: 200px;
             height: 100px;
+            display: none;
         }
 
         .modal {
@@ -125,9 +126,10 @@
         var span = document.getElementsByClassName("close")[0];
 
         // When the user clicks the button, open the modal 
-        btn.onclick = function () {
+        // Auto run when page loads.
+        (btn.onclick = function () {
             modal.style.display = "block";
-        }
+        })()
 
         // When the user clicks on <span> (x), close the modal
         span.onclick = function () {
